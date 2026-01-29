@@ -1,5 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from server.models import db
+from server.models.Kanji import Kanji
 
 router = APIRouter(
     prefix="/kanji"
@@ -21,8 +26,9 @@ kanji = [
         ]
 
 @router.get('/')
-def all():
-    return kanji
+def all(db: Session = Depends(db.get)):
+    all_kanji = db.scalars(select(Kanji)).all();
+    return all_kanji
 
 @router.get('/{id}')
 def one(id: int):

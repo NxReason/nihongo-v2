@@ -9,7 +9,7 @@
 
     --primary-color: #673F9F;
     --secondary-color: #42288B;
-    --tertiary-color: #8E5AD6;
+    --tertiary-color: #8e5ad6;
 
     --font-color: #FBE8E4;
 }
@@ -26,4 +26,6 @@
     border-radius: 1rem;
     box-shadow: 1px 1px 2px var(--primary-color);
 }
-
+.page-content {
+    padding: 1rem;
+}
