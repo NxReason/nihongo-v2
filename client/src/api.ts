@@ -1,16 +1,14 @@
-const BASE_URL = 'http://localhost:8000';
-class Err {
-    constructor(
-        readonly msg: string
-    ) { }
-}
+import Kanji from "./models/Kanji";
+
+const BASE_URL = 'http://localhost:8000/api';
+
 export const kanji = {
     url: BASE_URL + '/kanji',
-    async all(): Promise<number | Err> {
-        const response = await fetch(this.url + 'asdf');
-        console.log(response);
-        if (!response.ok) return new Err('Something went wrong');
-        return 42;
+    async all(): Promise<Kanji[]> {
+        const response = await fetch(this.url);
+        const data = await response.json();
+        const result = data.map(Kanji.fromJSON);
+        return result;
     }
 };
 

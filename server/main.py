@@ -8,14 +8,14 @@ from server.config import get_settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    settings = get_settings()
     db.init(settings)
     populate.populate(settings.env)
     yield
 
 app = FastAPI(lifespan=lifespan)
+settings = get_settings()
 
-enable_cors(app)
+enable_cors(app, settings.env)
 
 app.include_router(kanji.router, prefix="/api")
 

@@ -5,7 +5,8 @@ origins = [
         'http://localhost:5173'
         ]
 
-def enable_cors(app: FastAPI):
+def enable_cors(app: FastAPI, env: str = 'prod'):
+    if env not in ('dev', 'test'): return
     app.add_middleware(
             CORSMiddleware,
             allow_origins=origins,
