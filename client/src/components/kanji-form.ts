@@ -1,28 +1,63 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import type Kanji from "../models/Kanji";
+import Kanji from "../models/Kanji";
 import { ListInput } from "./list-input";
 import { formStyles } from "../styles/formStyles";
+import { kanji as kanjiAPI } from "../api";
+import { controlsStyles } from "../styles/controlsStyles";
 
 @customElement('kanji-form')
 export class KanjiForm extends LitElement {
     @property() kanji: Kanji | null = null;
     @state() glyph: string = '';
+    @state() private isLoading: boolean = false;
 
     firstUpdated() {
         this.glyph = this.kanji?.glyph ?? '';
     }
 
-    private handleSubmit(e: SubmitEvent) {
+    private async handleSubmit(e: SubmitEvent) {
         e.preventDefault();
+        if (this.isLoading) return;
+        this.isLoading = true;
+
         const [kun, on, meanings] = this.shadowRoot?.querySelectorAll<ListInput>('list-input')!;
-        const kanjiForm = {
-            glyph: this.glyph,
-            kunReadings: kun.collectValues(),
-            onReadings: on.collectValues(),
-            meanings: meanings.collectValues(),
+        const kanjiForm: Kanji = new Kanji();
+        kanjiForm.id = this.kanji?.id;
+        kanjiForm.glyph = this.glyph;
+        kanjiForm.kunReadings = kun.collectValues();
+        kanjiForm.onReadings = on.collectValues();
+        kanjiForm.meanings = meanings.collectValues();
+
+        console.log(this.kanji);
+        if (this.kanji?.id) await this.updateKanji(kanjiForm);
+        else await this.saveKanji(kanjiForm);
+
+        this.isLoading = false;
+    }
+
+    private async saveKanji(kanjiForm: Kanji) {
+        const result = await kanjiAPI.create(kanjiForm);
+        switch (result.state) {
+            case 'success': { this.clearInputs(); break; }
+            case 'errorDev': { console.log(result.msg); break; }
+            case 'errorUser': { console.log(result.detail); break; }
         }
-        console.log(kanjiForm);
+    }
+    private async updateKanji(kanjiForm: Kanji) {
+        const result = await kanjiAPI.update(kanjiForm);
+        switch (result.state) {
+            case 'success': { console.log('updated'); break; }
+            case 'errorDev': { console.log(result.msg); break; }
+            case 'errorUser': { console.log(result.detail); break; }
+        }
+    }
+    private clearInputs() {
+        this.glyph = '';
+        const [kun, on, meanings] = this.shadowRoot?.querySelectorAll<ListInput>('list-input')!;
+        kun.value = '';
+        on.value = '';
+        meanings.value = '';
     }
 
     private handleGlyphInput(e: InputEvent) {
@@ -31,6 +66,11 @@ export class KanjiForm extends LitElement {
     }
 
     render() {
+        let submitBtnText = this.kanji ? 'Update' : 'Create';
+        if (this.isLoading) {
+            submitBtnText = 'Loading...';
+        }
+
         return html`
         <form @submit=${this.handleSubmit}>
             <div class="form-field glyph-wrapper ${this.glyph === '' ? '' : 'filled'}">
@@ -43,13 +83,16 @@ export class KanjiForm extends LitElement {
             <list-input label="Kun" .initialValue=${this.kanji?.kunReadings ?? []}></list-input>
             <list-input label="On" .initialValue=${this.kanji?.onReadings ?? []}></list-input>
             <list-input label="Meanings" .initialValue=${this.kanji?.meanings ?? []}></list-input>
-            <button>Submit</button>
+            <div class="form-controls">
+                <button ?disabled=${this.isLoading}>${submitBtnText}</button>
+            </div>
         </form>
         `;
     }
 
     static styles = [
         formStyles,
+        controlsStyles,
         css`
         input.glyph-input {
             width: 6rem; height: 5rem;
@@ -94,7 +137,13 @@ export class KanjiForm extends LitElement {
             left: .3rem;
             opacity: 1;
         }
-        .filled::after { content: '' }`,
+        .filled::after { content: '' }
+        .form-controls {
+            margin-top: .4rem;
+        }
+        button {
+            width: 10rem;
+        }`,
     ];
 
 }

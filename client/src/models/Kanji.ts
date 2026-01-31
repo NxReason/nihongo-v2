@@ -14,6 +14,17 @@ export default class Kanji {
         k.meanings = json.meanings;
         return k;
     }
+
+    static toJSON(kanji: Kanji): string {
+        const kanjiPython = {
+            id: kanji.id,
+            glyph: kanji.glyph,
+            kun_readings: kanji.kunReadings,
+            on_readings: kanji.onReadings,
+            meanings: kanji.meanings,
+        }
+        return JSON.stringify(kanjiPython);
+    }
 }
 
 export interface KanjiSelectedEventDetail {

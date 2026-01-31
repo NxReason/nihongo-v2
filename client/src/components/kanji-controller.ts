@@ -6,7 +6,7 @@ type WindowState = 'list' | 'form' | 'exercises';
 
 @customElement('kanji-controller')
 export class KanjiController extends LitElement {
-    @state() WINDOW: WindowState = 'list';
+    @state() WINDOW: WindowState = 'form';
     @state() kanjiSelected: Kanji | null = null;
 
     constructor() {
