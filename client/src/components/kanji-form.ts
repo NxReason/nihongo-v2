@@ -29,7 +29,6 @@ export class KanjiForm extends LitElement {
         kanjiForm.onReadings = on.collectValues();
         kanjiForm.meanings = meanings.collectValues();
 
-        console.log(this.kanji);
         if (this.kanji?.id) await this.updateKanji(kanjiForm);
         else await this.saveKanji(kanjiForm);
 
