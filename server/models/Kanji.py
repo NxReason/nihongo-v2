@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -12,3 +13,9 @@ class Kanji(Base):
     on_readings: Mapped[list[str]] = mapped_column(ARRAY(String))
     kun_readings: Mapped[list[str]] = mapped_column(ARRAY(String))
     meanings: Mapped[list[str]] = mapped_column(ARRAY(String))
+
+class KanjiForm(BaseModel):
+    glyph: str
+    on_readings: list[str]
+    kun_readings: list[str]
+    meanings: list[str]
