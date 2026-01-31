@@ -2,6 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { kanji as kanjiAPI } from '../api.ts';
 import type Kanji from "../models/Kanji.ts";
+import type { KanjiSelectedEventDetail } from "../models/Kanji.ts";
 
 @customElement('kanji-list')
 export class KanjiList extends LitElement {
@@ -11,6 +12,11 @@ export class KanjiList extends LitElement {
     async connectedCallback() {
         super.connectedCallback();
         this.loadData();
+
+        // @ts-ignore
+        this.addEventListener('kanji-removed', (e: CustomEvent<KanjiSelectedEventDetail>) => {
+            this.deleteKanji(e.detail.kanji);
+        })
     }
 
     async loadData() {
@@ -22,6 +28,16 @@ export class KanjiList extends LitElement {
         catch (err) {
             console.error(err);
             this.LOAD_STATE = 'error';
+        }
+    }
+
+    async deleteKanji(kanji: Kanji) {
+        const result = await kanjiAPI.remove(kanji.id!);
+        switch (result.state) {
+            case 'success': {
+                this.kanjiList = this.kanjiList.filter(k => k.id !== result.kanji.id);
+            } break;
+            default: console.log('some error');
         }
     }
 

@@ -20,6 +20,28 @@ export class KanjiCard extends LitElement {
         this.dispatchEvent(new CustomEvent<KanjiSelectedEventDetail>('kanji-selected', options));
     }
 
+    private handleDelete(e: Event) {
+        e.stopPropagation();
+        const options = {
+            detail: { kanji: this.kanji },
+            bubble: true,
+            composed: true,
+        }
+        const event = new CustomEvent<KanjiSelectedEventDetail>('kanji-removed', options);
+        this.dispatchEvent(event);
+        console.log('deleting kanji', this.kanji.id);
+    }
+
+    render() {
+        return html`
+        <h2>${this.kanji.glyph}</h2>
+        ${this.makeReadingsList('Kun', this.kanji.kunReadings)}
+        ${this.makeReadingsList('On', this.kanji.onReadings)}
+        ${this.makeMeaningsList()}
+        <nx-icon fileName="delete1" @click=${this.handleDelete}></nx-icon>
+        `;
+    }
+
     static styles = css`
     :host {
         display: grid;
@@ -31,6 +53,7 @@ export class KanjiCard extends LitElement {
             'meanings meanings';
         gap: .5rem;
         padding: .5rem;
+        position: relative;
         border: 1px solid var(--primary-color);
         border-radius: 0 0 2rem;
         transition: box-shadow .1s ease-in;
@@ -65,17 +88,25 @@ export class KanjiCard extends LitElement {
     .meanings {
         padding-left: 1rem;
     }
-    `
-
-    render() {
-        return html`
-        <h2>${this.kanji.glyph}</h2>
-        ${this.makeReadingsList('Kun', this.kanji.kunReadings)}
-        ${this.makeReadingsList('On', this.kanji.onReadings)}
-        ${this.makeMeaningsList()}
-        `;
+    nx-icon {
+        width: 2.4rem;
+        height: 2.4rem;
+        padding: .2rem;
+        background-color: var(--primary-color);
+        background-size: 2rem;
+        position: absolute;
+        right: -0.5rem;
+        top: -0.5rem;
+        opacity: 0;
+        transition: all .15s ease-in;
     }
-
+    nx-icon:hover {
+        background-color: var(--tertiary-color);
+    }
+    :host(:hover) nx-icon {
+        opacity: 1;
+    }
+    `
 
     private makeReadingsList(listName: string, readings: string[]) {
         return html`

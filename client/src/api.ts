@@ -55,10 +55,19 @@ export const kanji = {
         }
     },
 
-    async remove(id: number): Promise<Kanji> {
-        const response = await fetch(this.url + '/' + id, { method: 'DELETE' });
-        const kanjiJson = await response.json();
-        return Kanji.fromJSON(kanjiJson);
+    async remove(id: number): Promise<KanjiResponse | APIError> {
+        try {
+            const response = await fetch(this.url + '/' + id, { method: 'DELETE' });
+            const responseJson = await response.json();
+            if (!response.ok) {
+                return { state: 'errorUser', detail: responseJson.detail };
+            }
+            return { state: 'success', kanji: Kanji.fromJSON(responseJson) };
+        }
+        catch (err) {
+            console.error(`API error: ${err}`);
+            return { state: 'errorDev', msg: `Can't delete kanji with id: ${id}` };
+        }
     }
 };
 

@@ -42,7 +42,11 @@ def update(id: int, in_kanji: KanjiForm, db: Session = Depends(db.get)):
         db.rollback()
         raise HTTPException(400, detail='Invalid kanji data')
 
-@router.post('/{id}')
-def delete(id: int):
-    print(id)
-    return {}
+@router.delete('/{id}')
+def delete(id: int, db: Session = Depends(db.get)):
+    del_kanji = db.get(Kanji, id)
+    if not del_kanji:
+        raise HTTPException(404, detail=f"Can't find kanji with id={id} to delete")
+    db.delete(del_kanji)
+    db.commit()
+    return del_kanji
