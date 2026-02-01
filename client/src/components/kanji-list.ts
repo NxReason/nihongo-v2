@@ -1,48 +1,22 @@
 import { css, html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { kanji as kanjiAPI } from '../api.ts';
+import { customElement, property } from "lit/decorators.js";
 import type Kanji from "../models/Kanji.ts";
-import type { KanjiSelectedEventDetail } from "../models/Kanji.ts";
 
 @customElement('kanji-list')
 export class KanjiList extends LitElement {
-    @state() kanjiList: Kanji[] = [];
-    @state() LOAD_STATE: 'loading' | 'success' | 'error' = 'loading';
+    @property() kanjiList: Kanji[] = [];
 
-    async connectedCallback() {
-        super.connectedCallback();
-        this.loadData();
-
-        // @ts-ignore
-        this.addEventListener('kanji-removed', (e: CustomEvent<KanjiSelectedEventDetail>) => {
-            this.deleteKanji(e.detail.kanji);
-        })
-    }
-
-    async loadData() {
-        try {
-            const res = await kanjiAPI.all();
-            this.kanjiList = res;
-            this.LOAD_STATE = 'success';
-        }
-        catch (err) {
-            console.error(err);
-            this.LOAD_STATE = 'error';
-        }
-    }
-
-    async deleteKanji(kanji: Kanji) {
-        const result = await kanjiAPI.remove(kanji.id!);
-        switch (result.state) {
-            case 'success': {
-                this.kanjiList = this.kanjiList.filter(k => k.id !== result.kanji.id);
-            } break;
-            default: console.log('some error');
-        }
-    }
-
-    private handleNewKanji() {
-        this.dispatchEvent(new CustomEvent('new-kanji', { bubbles: true, composed: true }));
+    render() {
+        return html`
+        <kanji-controls></kanji-controls>
+        <ul>
+        ${this.kanjiList.map(k => {
+            return html`
+            <kanji-card
+                .kanji=${k}
+            </kanji-card> `;
+        })}
+        </ul>`;
     }
 
     static styles = css`
@@ -53,51 +27,5 @@ export class KanjiList extends LitElement {
         gap: 1rem;
         padding: 0;
         margin: 0;
-    }
-    button {
-        position: absolute;
-        right: 2.5rem;
-        top: 2.5rem;
-        background-color: var(--primary-color);
-        color: var(--font-color);
-        border: none;
-        font: inherit;
-        padding: .3rem .8rem;
-        border-radius: .3rem;
-        transition: background-color .15s ease-in;
-    }
-    button:hover {
-        background-color: var(--tertiary-color);
-        cursor: pointer;
-    }
-    `;
-
-    render() {
-        let content;
-        switch (this.LOAD_STATE) {
-            case 'loading':
-                content = html`<h2>Loading...</h2>`;
-                break;
-            case 'success':
-                content = this.makeKanjiList();
-                break;
-            case 'error':
-                content = html`<h2>Something went wrong`;
-                break;
-        }
-        return content;
-    }
-
-    makeKanjiList() {
-        return html`
-        <button @click=${this.handleNewKanji}>Add</button>
-        <ul>
-        ${this.kanjiList.map(k => {
-            return html`
-            <kanji-card
-                .kanji=${k}
-            </kanji-card> `;
-        })}
-        </ul>`;
-    }
+    }`;
 }

@@ -30,3 +30,7 @@ export default class Kanji {
 export interface KanjiSelectedEventDetail {
     kanji: Kanji
 }
+export interface KanjiDetail {
+    kanji: Kanji
+}
+

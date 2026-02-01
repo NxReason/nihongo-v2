@@ -29,7 +29,6 @@ export class KanjiCard extends LitElement {
         }
         const event = new CustomEvent<KanjiSelectedEventDetail>('kanji-removed', options);
         this.dispatchEvent(event);
-        console.log('deleting kanji', this.kanji.id);
     }
 
     render() {
@@ -89,14 +88,14 @@ export class KanjiCard extends LitElement {
         padding-left: 1rem;
     }
     nx-icon {
-        width: 2.4rem;
-        height: 2.4rem;
+        width: 2rem;
+        height: 2rem;
         padding: .2rem;
         background-color: var(--primary-color);
-        background-size: 2rem;
+        background-size: 1.6rem;
         position: absolute;
-        right: -0.5rem;
-        top: -0.5rem;
+        right: -0.4rem;
+        top: -0.4rem;
         opacity: 0;
         transition: all .15s ease-in;
     }

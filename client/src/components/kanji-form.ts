@@ -5,6 +5,7 @@ import { ListInput } from "./list-input";
 import { formStyles } from "../styles/formStyles";
 import { kanji as kanjiAPI } from "../api";
 import { controlsStyles } from "../styles/controlsStyles";
+import { type KanjiDetail } from "../models/Kanji";
 
 @customElement('kanji-form')
 export class KanjiForm extends LitElement {
@@ -38,7 +39,14 @@ export class KanjiForm extends LitElement {
     private async saveKanji(kanjiForm: Kanji) {
         const result = await kanjiAPI.create(kanjiForm);
         switch (result.state) {
-            case 'success': { this.clearInputs(); break; }
+            case 'success': {
+                const options = {
+                    detail: { kanji: result.kanji },
+                    bubbles: true, composed: true,
+                }
+                this.dispatchEvent(new CustomEvent<KanjiDetail>('kanji-created', options));
+                this.clearInputs();
+            } break;
             case 'errorDev': { console.log(result.msg); break; }
             case 'errorUser': { console.log(result.detail); break; }
         }
@@ -46,7 +54,13 @@ export class KanjiForm extends LitElement {
     private async updateKanji(kanjiForm: Kanji) {
         const result = await kanjiAPI.update(kanjiForm);
         switch (result.state) {
-            case 'success': { console.log('updated'); break; }
+            case 'success': {
+                const options = {
+                    detail: { kanji: result.kanji },
+                    bubbles: true, composed: true,
+                };
+                this.dispatchEvent(new CustomEvent<KanjiDetail>('kanji-updated', options));
+            } break;
             case 'errorDev': { console.log(result.msg); break; }
             case 'errorUser': { console.log(result.detail); break; }
         }
@@ -86,6 +100,7 @@ export class KanjiForm extends LitElement {
                 <button ?disabled=${this.isLoading}>${submitBtnText}</button>
             </div>
         </form>
+        <kanji-controls></kanji-controls>
         `;
     }
 

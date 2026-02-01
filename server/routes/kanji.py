@@ -50,3 +50,4 @@ def delete(id: int, db: Session = Depends(db.get)):
     db.delete(del_kanji)
     db.commit()
     return del_kanji
+
