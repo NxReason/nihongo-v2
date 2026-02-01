@@ -2,10 +2,12 @@ from sqlalchemy import insert
 from sqlalchemy.orm import Session
 from server.models import db
 from server.models.Kanji import Kanji
+from server.models.Word import Word
 
 def populate(env: str):
     if env != 'dev': return
     populate_kanji()
+    populate_words()
 
 kanji_data = [
     { 'glyph': '内', 'on_readings': ['nai', 'dai'], 'kun_readings': ['uchi'], 'meanings': ['inside', 'house'] },
@@ -16,5 +18,15 @@ kanji_data = [
 def populate_kanji():
     with Session(db.engine) as session:
         stmt = insert(Kanji).values(kanji_data)
+        session.execute(stmt)
+        session.commit()
+
+words_data = [
+        { 'jp': '上げる', 'reading': 'ageru', 'meanings': ['to raise', 'to increase', 'to give'] },
+        { 'jp': '世界', 'reading': 'sekai', 'meanings': ['world', 'society', 'universe'] },
+        ]
+def populate_words():
+    with Session(db.engine) as session:
+        stmt = insert(Word).values(words_data)
         session.execute(stmt)
         session.commit()
