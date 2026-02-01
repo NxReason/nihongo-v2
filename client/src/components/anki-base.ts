@@ -1,16 +1,14 @@
-import { css, html, LitElement } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import Kanji from '../models/Kanji.ts'
+import { css, html, LitElement, type TemplateResult } from "lit";
+import { property, state } from "lit/decorators.js";
 import { controlsStyles } from "../styles/controlsStyles.ts";
 
-@customElement('ex-anki')
-export class ExAnki extends LitElement {
-    @property() kanjiList!: Kanji[]
+export abstract class AnkiBase<T> extends LitElement {
+    @property() items!: T[]
     @state() index: number = 0;
     @state() showDetails: boolean = false;
 
     private nextCard() {
-        if (this.index >= this.kanjiList.length - 1) {
+        if (this.index >= this.items.length - 1) {
             const event = new CustomEvent('ex-anki-complete', { bubbles: true, composed: true });
             this.dispatchEvent(event);
             return;
@@ -20,33 +18,15 @@ export class ExAnki extends LitElement {
     }
 
     render() {
-        const card = this.makeCard(this.kanjiList[this.index]);
+        const card = this.makeCard(this.items[this.index]);
         const controls = this.makeControls();
         return html`
-        ${card}
+        <div class="card">${card}</div>
         ${controls}
         `;
     }
 
-    private makeCard(kanji: Kanji) {
-        return html`
-        <div class="card">
-            <p class="card-glyph">${kanji.glyph}</p>
-            <p class="card-details">
-                <span>Kun</span>
-                <span>${this.showDetails ? kanji.kunReadings.join(', ') : '...'}</span>
-            </p>
-            <p class="card-details">
-                <span>On</span>
-                <span>${this.showDetails ? kanji.onReadings.join(', ') : '...'}</span>
-            </p>
-            <p class="card-details">
-                <span>Meanings</span>
-                <span>${this.showDetails ? kanji.meanings.join(', ') : '...'}</span>
-            </p>
-        </div>
-        `;
-    }
+    abstract makeCard(item: T): TemplateResult
 
     private makeControls() {
         return html`
@@ -62,6 +42,15 @@ export class ExAnki extends LitElement {
         `;
     }
 
+    protected makeDetail(tag: string, text: string, placeholder: string = '...') {
+        return html`
+        <p class="card-details">
+            <span>${tag}</span>
+            <span>${this.showDetails ? text : placeholder}</span>
+        </p>
+        `;
+    }
+
     static styles = [
         controlsStyles,
         css`
@@ -72,11 +61,10 @@ export class ExAnki extends LitElement {
             border: 2px solid var(--bg-color);
             border-bottom: 3px solid var(--primary-color);
         }
-        .card-glyph {
-            padding: 5rem; margin: 0;
-            justify-self: center;
-            font-size: 20rem;
-            line-height: 20rem;
+        .card-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
         }
         .card-details {
             display: flex;
@@ -89,11 +77,6 @@ export class ExAnki extends LitElement {
                 padding: .5rem 1rem;
                 background-color: var(--primary-color);
             }
-        }
-        .card-controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
         }
         `
     ]

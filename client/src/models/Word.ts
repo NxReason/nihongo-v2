@@ -25,5 +25,5 @@ export default class Word {
 }
 
 export interface WordDetail {
-    kanji: Word
+    word: Word
 }

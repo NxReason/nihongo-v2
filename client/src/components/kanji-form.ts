@@ -100,7 +100,7 @@ export class KanjiForm extends LitElement {
                 <button ?disabled=${this.isLoading}>${submitBtnText}</button>
             </div>
         </form>
-        <kanji-controls></kanji-controls>
+        <page-controls></page-controls>
         `;
     }
 

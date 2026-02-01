@@ -12,7 +12,7 @@ router = APIRouter(
 
 @router.get('/')
 def all(db: Session = Depends(db.get)):
-    all_words = db.scalars(select(Word)).all();
+    all_words = db.scalars(select(Word).order_by('id')).all();
     return all_words
 
 @router.post('/')

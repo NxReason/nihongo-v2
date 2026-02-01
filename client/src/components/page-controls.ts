@@ -6,19 +6,19 @@ type buttonData = {
     handler: Function
 }
 
-@customElement('kanji-controls')
-export class KanjiControls extends LitElement {
+@customElement('page-controls')
+export class PageControls extends LitElement {
     private buttonsData: buttonData[] = [
-        { icon: 'list1', handler: this.gotoKanjiList },
-        { icon: 'add1', handler: this.gotoNewKanji },
+        { icon: 'list1', handler: this.gotoList },
+        { icon: 'add1', handler: this.gotoNewForm },
     ];
 
-    private gotoKanjiList() {
-        this.dispatchEvent(new CustomEvent('goto-kanji-list', { bubbles: true, composed: true }));
+    private gotoList() {
+        this.dispatchEvent(new CustomEvent('goto-list', { bubbles: true, composed: true }));
     }
 
-    private gotoNewKanji() {
-        this.dispatchEvent(new CustomEvent('goto-new-kanji', { bubbles: true, composed: true }));
+    private gotoNewForm() {
+        this.dispatchEvent(new CustomEvent('goto-new-form', { bubbles: true, composed: true }));
     }
 
     render() {

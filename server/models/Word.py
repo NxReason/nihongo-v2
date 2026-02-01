@@ -18,7 +18,6 @@ class Word(Base):
     )
 
 class WordForm(BaseModel):
-    glyph: str
     jp: str
     reading: str
     meanings: list[str]

@@ -8,7 +8,6 @@ export class KanjiList extends LitElement {
 
     render() {
         return html`
-        <kanji-controls></kanji-controls>
         <ul>
         ${this.kanjiList.map(k => {
             return html`
@@ -16,7 +15,8 @@ export class KanjiList extends LitElement {
                 .kanji=${k}
             </kanji-card> `;
         })}
-        </ul>`;
+        </ul>
+        <page-controls></page-controls>`;
     }
 
     static styles = css`

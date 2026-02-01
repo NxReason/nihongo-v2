@@ -27,9 +27,7 @@ export class ListInput extends LitElement {
         return html`
         <div class="form-field">
             <input
-                class="kun-input"
                 type="text"
-                name="kun-input"
                 placeholder=' '
                 @input=${this.handleInput}
                 .value=${this.value} />

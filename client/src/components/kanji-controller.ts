@@ -39,16 +39,12 @@ export class KanjiController extends LitElement {
             this.deleteKanji(e.detail.kanji);
         });
 
-        this.addEventListener('goto-new-kanji', () => {
+        this.addEventListener('goto-new-form', () => {
             this.kanjiSelected = null;
             this.WINDOW = 'form';
         });
 
-        this.addEventListener('goto-exercises', () => {
-            this.WINDOW = 'exercises';
-        });
-
-        this.addEventListener('goto-kanji-list', () => {
+        this.addEventListener('goto-list', () => {
             this.WINDOW = 'list';
         });
     }

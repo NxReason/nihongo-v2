@@ -27,7 +27,7 @@ export class KanjiExercises extends LitElement {
             } break;
             case 'anki': {
                 const kanjiEx = this.takeRandomKanji(10);
-                content = html`<ex-anki .kanjiList=${kanjiEx}></ex-anki>`;
+                content = html`<anki-kanji .items=${kanjiEx}></anki-kanji>`;
             } break;
             case 'test': {
                 content = html`<div>test</div>`;
@@ -37,7 +37,7 @@ export class KanjiExercises extends LitElement {
 
         return html`
         ${content}
-        <kanji-controls></kanji-controls>
+        <page-controls></page-controls>
         `;
     }
 
