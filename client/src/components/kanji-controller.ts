@@ -97,7 +97,7 @@ export class KanjiController extends LitElement {
         switch (this.WINDOW) {
             case 'list': return html`<kanji-list .kanjiList=${this.kanjiList}></kanji-list>`;
             case 'form': return html`<kanji-form .kanji=${this.kanjiSelected}></kanji-form>`;
-            case 'exercises': return html`<kanji-exercises></kanji-exercises>`;
+            case 'exercises': return html`<kanji-exercises .kanjiList=${this.kanjiList}></kanji-exercises>`;
             default: throw new Error('Unhandled kanji controller state');
         }
     }

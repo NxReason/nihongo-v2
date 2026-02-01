@@ -7,3 +7,4 @@ import './components/kanji-card.ts';
 import './components/kanji-form.ts';
 
 import './components/kanji-exercises.ts';
+import './components/ex-anki.ts';
