@@ -13,4 +13,7 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings():
-    return Settings() # type: ignore
+    settings = Settings() # type: ignore
+    if settings.env.lower() in ('dev', 'test'):
+        settings.db_name += '_dev'
+    return settings # type: ignore

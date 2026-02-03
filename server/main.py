@@ -23,3 +23,4 @@ app.include_router(words.router, prefix="/api")
 @app.get('/')
 def root():
     return { 'hello': 'world' }
+
