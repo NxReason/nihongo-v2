@@ -1,6 +1,8 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+const BASE_PATH = import.meta.env.DEV ? '' : '/public';
+
 @customElement('nx-icon')
 export class NxIcon extends LitElement {
     @property() fileName: string = '';
@@ -19,7 +21,7 @@ export class NxIcon extends LitElement {
 
     connectedCallback(): void {
         super.connectedCallback();
-        this.style.backgroundImage = `url('/${this.fileName}.${this.fileExt}')`
+        this.style.backgroundImage = `url('${BASE_PATH}/${this.fileName}.${this.fileExt}')`
     }
 
     render() {

@@ -1,14 +1,30 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
     build: {
+        outDir: '../server/static',
+        assetsDir: 'public',
+        emptyOutDir: true,
+        copyPublicDir: false,
         rollupOptions: {
             input: {
-                main: './main.ts',
-                words: './words.ts',
-                kanji: './kanji.ts',
-                video: './video.ts',
-            }
+                main: resolve(__dirname, 'index.html'),
+                words: resolve(__dirname, 'words.html'),
+                kanji: resolve(__dirname, 'kanji.html'),
+                video: resolve(__dirname, 'video.html'),
+            },
         }
-    }
+    },
+    plugins: [
+        viteStaticCopy({
+            targets: [
+                {
+                    src: resolve(__dirname, './public/*'),
+                    dest: 'public',
+                }
+            ]
+        })
+    ]
 })
